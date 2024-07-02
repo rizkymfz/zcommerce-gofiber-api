@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/rizkymfz/zcommerce-gofiber-api/database"
+	"github.com/rizkymfz/zcommerce-gofiber-api/database/migrations"
 	"github.com/rizkymfz/zcommerce-gofiber-api/routes"
 )
 
@@ -13,7 +14,7 @@ func main() {
 	database.DatabaseInit()
 
 	//migrate init
-	// migrations.Migration()
+	migrations.Migration()
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.Status(200).JSON(fiber.Map{

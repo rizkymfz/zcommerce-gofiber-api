@@ -12,12 +12,9 @@ import (
 
 func GetAllUsers(c *fiber.Ctx) error {
 	var users []*models.User
-
 	database.DB.Debug().Find(&users)
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "Success",
-		"data":    users,
-	})
+
+	return utils.SuccessResponse(c, users, "success")
 }
 
 func CreateUsers(c *fiber.Ctx) error {
@@ -31,10 +28,7 @@ func CreateUsers(c *fiber.Ctx) error {
 	errValidate := validate.Struct(user)
 
 	if errValidate != nil {
-		return c.Status(400).JSON(fiber.Map{
-			"message": "failed to validate",
-			"error":   errValidate.Error(),
-		})
+		return utils.FailedResponse(c, nil, "failed to validate", []string{errValidate.Error()})
 	}
 
 	newUser := models.User{
@@ -54,10 +48,11 @@ func CreateUsers(c *fiber.Ctx) error {
 
 	database.DB.Debug().Create(&newUser)
 
-	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-		"message": "Success create users",
-		"data":    newUser,
-	})
+	// return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+	// 	"message": "Success create users",
+	// 	"data":    newUser,
+	// })
+	return utils.SuccessResponse(c, newUser, "success", fiber.StatusCreated)
 }
 
 func GetUserById(c *fiber.Ctx) error {
@@ -71,9 +66,10 @@ func GetUserById(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"user": user,
-	})
+	// return c.Status(fiber.StatusOK).JSON(fiber.Map{
+	// 	"user": user,
+	// })
+	return utils.SuccessResponse(c, user, "success")
 
 }
 
@@ -92,9 +88,10 @@ func UpdateUser(c *fiber.Ctx) error {
 		"phone": user.Phone,
 	})
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "succes update user",
-	})
+	// return c.Status(fiber.StatusOK).JSON(fiber.Map{
+	// 	"message": "succes update user",
+	// })
+	return utils.SuccessResponse(c, user, "success")
 }
 
 func DeleteUser(c *fiber.Ctx) error {
@@ -104,7 +101,8 @@ func DeleteUser(c *fiber.Ctx) error {
 
 	database.DB.Debug().Where("id = ?", id).Delete(&user)
 
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "delete user successfully",
-	})
+	// return c.Status(fiber.StatusOK).JSON(fiber.Map{
+	// 	"message": "delete user successfully",
+	// })
+	return utils.SuccessResponse(c, user, "delete user successfully")
 }

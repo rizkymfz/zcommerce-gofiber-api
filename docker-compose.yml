@@ -1,0 +1,41 @@
+version: '3.7'
+
+services:
+  db-mysql:
+    container_name: db-mysql
+    image: mysql:latest
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_USER: gotest
+      MYSQL_PASSWORD: gotest
+      MYSQL_ROOT_PASSWORD: gotest
+      MYSQL_DATABASE: zcommerce
+    volumes:
+      - private-db:/var/lib/mysql
+    networks:
+      - go_network
+
+  app:
+    container_name: goapp
+    build: .
+    ports:
+      - 9000:9000
+    environment:
+      DB_HOST: db-mysql
+      DB_PORT: 3306
+      DB_USER: root
+      DB_PASSWORD: gotest
+      DB_NAME: zcommerce
+    depends_on:
+      - db-mysql
+    networks:
+      - go_network
+
+volumes:
+  private-db:
+      
+networks:
+  go_network:
+    name: go_network
+    driver: bridge
